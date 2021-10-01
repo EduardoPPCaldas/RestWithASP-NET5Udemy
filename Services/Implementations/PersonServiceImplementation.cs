@@ -2,67 +2,97 @@ using System;
 using System.Collections.Generic;
 using RestWithASPNETUdemy.Model;
 using System.Threading;
+using RestWithASPNETUdemy.Model.Context;
+using System.Linq;
 
 namespace RestWithASPNETUdemy.Services.Implementations
 {
   public class PersonServiceImplementation : IPersonService
   {
-    private volatile int count;
+    private MySQLContext _context;
 
-    public Person create(Person person)
+    public PersonServiceImplementation(MySQLContext context)
     {
+        _context = context;
+    }
 
+    public List<Person> FindAll()
+    {
+        
+        return _context.Persons.ToList();
+    }
+
+
+    public Person FindById(long id)
+    {
+        return _context.Persons.SingleOrDefault(p => p.Id.Equals(id));
+    }
+
+    public Person Create(Person person)
+    {
+        try
+        {
+             _context.Add(person);
+             _context.SaveChanges();
+        }
+        catch (System.Exception ex)
+        {
+            
+            throw ex;
+        }
         return person;
     }
 
     public void Delete(long id)
     {
-        
-    }
+        var result = _context.Persons.SingleOrDefault(p => p.Id.Equals(id));
 
-    public List<Person> findAll()
-    {
-        List<Person> persons = new List<Person>();
-        for(int i=0; i<8; i++)
+        if(result != null)
         {
-            Person person = MockPerson(i);
-            persons.Add(person);
+            try
+            {
+                _context.Persons.Remove(result);
+                _context.SaveChanges();
+            }
+            catch (System.Exception ex)
+            {
+                
+                throw ex;
+            }
         }
-        return persons;
     }
 
+    
 
-    public Person findById(long id)
+    public Person Update(Person person)
     {
-        return new Person
+        if(!Exists(person.Id))
         {
-            Id = IncrementAndGet(),
-            FirstName = "Eduardo",
-            LastName = "Caldas",
-            Address = "Rua cassiano santos",
-            Gender = "Masculino"
-        };
-    }
+            return new Person();
+        }
 
-    public Person update(Person person)
-    {
+        var result = _context.Persons.SingleOrDefault(p => p.Id.Equals(person.Id));
+
+        if(result != null)
+        {
+            try
+            {
+                _context.Entry(result).CurrentValues.SetValues(person);
+                _context.SaveChanges();
+            }
+            catch (System.Exception ex)
+            {
+                
+                throw ex;
+            }
+        }
+
         return person;
     }
-    private Person MockPerson(int i)
-    {
-        return new Person
-        {
-            Id = IncrementAndGet(),
-            FirstName = "Person Name" + i,
-            LastName = "Person LastName" + i,
-            Address = "Some address" + i,
-            Gender = "Male"
-        };
-    }
 
-    private long IncrementAndGet()
+    private bool Exists(long id)
     {
-        return Interlocked.Increment(ref count);
+      return _context.Persons.Any(p => p.Id.Equals(id));
     }
   }
 }

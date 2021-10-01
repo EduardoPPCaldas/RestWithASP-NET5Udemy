@@ -9,8 +9,9 @@ using RestWithASPNETUdemy.Services;
 
 namespace RestWithASPNETUdemy.Controllers
 {
+    [ApiVersion("1")]
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/[controller]/v{version:apiVersion}")]
     public class PersonController : ControllerBase
     {
 
@@ -26,14 +27,14 @@ namespace RestWithASPNETUdemy.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            return Ok(_personService.findAll());
+            return Ok(_personService.FindAll());
         }
 
         
         [HttpGet("{id}")]
         public IActionResult Get(long id)
         {
-            var person = _personService.findById(id);
+            var person = _personService.FindById(id);
 
             if(person == null)
             {
@@ -49,7 +50,7 @@ namespace RestWithASPNETUdemy.Controllers
             {
                 return BadRequest();
             }
-            return Ok(_personService.create(person));
+            return Ok(_personService.Create(person));
         }
 
         [HttpPut]
@@ -59,7 +60,7 @@ namespace RestWithASPNETUdemy.Controllers
             {
                 return BadRequest();
             }
-            return Ok(_personService.update(person));
+            return Ok(_personService.Update(person));
         }
         [HttpDelete("{id}")]
         public IActionResult Delete(long id)
