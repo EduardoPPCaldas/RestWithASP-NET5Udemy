@@ -68,7 +68,7 @@ namespace RestWithASPNETUdemy.Repository.Implementations
     {
         if(!Exists(person.Id))
         {
-            return new Person();
+            return null;
         }
 
         var result = _context.Persons.SingleOrDefault(p => p.Id.Equals(person.Id));
