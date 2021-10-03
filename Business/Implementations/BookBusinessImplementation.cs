@@ -1,15 +1,15 @@
 using System;
 using System.Collections.Generic;
 using RestWithASPNETUdemy.Model;
-using RestWithASPNETUdemy.Repository;
+using RestWithASPNETUdemy.Repository.Generic;
 
 namespace RestWithASPNETUdemy.Business.Implementations
 {
     public class BookBusinessImplementation : IBookBusiness
     {
-    private readonly IBookRepository _repository;
+    private readonly IRepository<Book> _repository;
 
-    public BookBusinessImplementation(IBookRepository repository)
+    public BookBusinessImplementation(IRepository<Book> repository)
     {
         _repository = repository;
     }
@@ -31,7 +31,7 @@ namespace RestWithASPNETUdemy.Business.Implementations
 
     public Book FindById(long id)
     {
-        return _repository.FindById(id);
+        return _repository.FindByID(id);
     }
 
     public Book Update(Book book)
