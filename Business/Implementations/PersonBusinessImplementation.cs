@@ -5,14 +5,15 @@ using System.Threading;
 using RestWithASPNETUdemy.Model.Context;
 using System.Linq;
 using RestWithASPNETUdemy.Repository;
+using RestWithASPNETUdemy.Repository.Generic;
 
 namespace RestWithASPNETUdemy.Business.Implementations
 {
   public class PersonBusinessImplementation : IPersonBusiness
   {
-    private readonly IPersonRepository _repository;
+    private readonly IRepository<Person> _repository;
 
-    public PersonBusinessImplementation(IPersonRepository repository)
+    public PersonBusinessImplementation(IRepository<Person> repository)
     {
         _repository = repository;
     }
@@ -25,7 +26,7 @@ namespace RestWithASPNETUdemy.Business.Implementations
 
     public Person FindById(long id)
     {
-        return _repository.FindById(id);
+        return _repository.FindByID(id);
     }
 
     public Person Create(Person person)
